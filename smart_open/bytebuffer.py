@@ -17,7 +17,31 @@ class ByteBuffer(object):
 
     The bytes are stored in a bytestring, and previously-read bytes are freed
     when the buffer is next filled (by slicing the bytestring into a smaller
-    copy)."""
+    copy).
+
+
+    Example:
+    >>> buf = ByteBuffer(chunk_size = 8)
+    >>> message_bytes = iter([b'Hello, W', b'orld!'])
+    >>> buf.fill(message_bytes)
+    8
+    >>> len(buf) # only chunk_size bytes are filled
+    8
+    >>> buf.peek()
+    b'Hello, W'
+    >>> len(buf) # peek() does not change read position
+    8
+    >>> buf.read(6)
+    b'Hello,'
+    >>> len(buf) # read() does change read position
+    2
+    >>> buf.fill(message_bytes)
+    5
+    >>> buf.read()
+    b' World!'
+    >>> len(buf)
+    0
+    """
 
     def __init__(self, chunk_size=io.DEFAULT_BUFFER_SIZE):
         """Create a ByteBuffer instance that reads chunk_size bytes when filled.
